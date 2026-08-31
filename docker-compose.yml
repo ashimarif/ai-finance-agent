@@ -1,0 +1,59 @@
+services:
+  # -------------------------------------------------------------
+  # 1. PostgreSQL Database Service
+  # -------------------------------------------------------------
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: finance_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: finance_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d finance_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # -------------------------------------------------------------
+  # 2. FastAPI Backend Service (Agent Engine)
+  # -------------------------------------------------------------
+  agent-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: finance_agent_api
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - DATABASE_URL=postgresql://postgres:postgres@postgres-db:5432/finance_db
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+
+  # -------------------------------------------------------------
+  # 3. Streamlit UI Frontend Service
+  # -------------------------------------------------------------
+  streamlit-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: finance_streamlit_ui
+    restart: always
+    ports:
+      - "8501:8501"
+    environment:
+      # Directs the frontend to communicate with the agent-api container
+      - API_BASE_URL=http://agent-api:8000
+    depends_on:
+      - agent-api
+
+volumes:
+  pgdata:
