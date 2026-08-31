@@ -22,6 +22,59 @@ Built on a cyclical **LangGraph** orchestration graph powered by **Gemini 2.0 Fl
 - 🔄 **Stateful Conversational Memory:** Maintains multi-turn context across queries using thread-isolated session memory.
 - 🐳 **Microservices Architecture:** Fully containerized multi-tier stack (Database, API Engine, Frontend UI) orchestrated with Docker Compose and internal container networking.
 
+<<<<<<< HEAD
+---
+
+## 🏗️ System Architecture
+
+```
+                               +-----------------------------+
+                               |     Streamlit Frontend      |
+                               |    (Web UI - Port 8501)     |
+                               +--------------+--------------+
+                                              |
+                                              | HTTP POST /chat
+                                              v
+                               +-----------------------------+
+                               |       FastAPI Backend       |
+                               |     (REST - Port 8000)      |
+                               +--------------+--------------+
+                                              |
+                                              v
+                         +-----------------------------------------+
+                         |        LangGraph Agent Engine           |
+                         |                                         |
+                         |    +-------------------------------+    |
+                         |    |        Agent State Node       |    |
+                         |    |     (Gemini 2.0 Flash LLM)    |    |
+                         |    +---------------+---------------+    |
+                         |                    |                    |
+                         |       [tools_condition / router]        |
+                         |          /                   \          |
+                         |    (Tool Call)           (Final Answer) |
+                         |        /                       \        |
+                         |       v                         v       |
+                         |  +-----------+              +-------+   |
+                         |  | Tool Node |              |  END  |   |
+                         |  +-----+-----+              +-------+   |
+                         |        |                                |
+                         +--------|--------------------------------+
+                                  | SQL Execution (psycopg3)
+                                  v
+                    +-----------------------------+
+                    |     PostgreSQL Database     |
+                    |         (Port 5432)         |
+                    | --------------------------- |
+                    | • personal_expenses         |
+                    | • group_bills               |
+                    | • iou_records               |
+                    +-----------------------------+
+```
+
+---
+
+=======
+>>>>>>> 30b4105a0720cc487a08c69ffc207aeb647f4947
 ## 🛠️ Tech Stack
 
 | Domain | Technology | Purpose |
@@ -52,6 +105,12 @@ Built on a cyclical **LangGraph** orchestration graph powered by **Gemini 2.0 Fl
 ├── requirements.txt        # Python dependency manifest
 ├── .env.example            # Environment variable template
 └── README.md               # Project documentation
+<<<<<<< HEAD
+```
+
+---
+=======
+>>>>>>> 30b4105a0720cc487a08c69ffc207aeb647f4947
 
 ## 🗄️ Database Schema Design
 
@@ -85,5 +144,93 @@ CREATE TABLE iou_records (
     is_settled BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+<<<<<<< HEAD
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (ensure Virtualization/WSL 2 is enabled)
+- [Google AI Studio API Key](https://aistudio.google.com/)
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/<your-username>/<repo-name>.git
+cd <repo-name>
+```
+
+### 2. Configure Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+GEMINI_API_KEY="your_actual_gemini_api_key_here"
+DATABASE_URL="postgresql://postgres:postgres@postgres-db:5432/finance_db"
+```
+
+### 3. Launch Stack with Docker Compose
+
+Run a single command to build and launch all three microservices:
+
+```bash
+docker compose up --build -d
+```
+
+### 4. Access the Applications
+
+- **Streamlit Web UI:** Open [http://localhost:8501](http://localhost:8501)
+- **FastAPI Interactive Docs (Swagger):** Open [http://localhost:8000/docs](http://localhost:8000/docs)
+- **PostgreSQL Database:** Exposed on `localhost:5432`
+
+---
+
+## 💬 Conversational Test Scenarios
+
+Try the following natural language prompts directly in the Streamlit UI:
+
+1. **Log Solo Spending:**
+   > *"I spent $18.50 on McDonald's for lunch and $35 on a gas refill."*
+2. **Split Outing Bills:**
+   > *"I paid $120 for BBQ dinner with Sarah and David. Split the bill evenly across the 3 of us."*
+3. **Query Active Debts:**
+   > *"Who owes me money right now and what is the total outstanding balance?"*
+4. **Settle Debt:**
+   > *"Sarah just transferred me her share. Settle her debts."*
+5. **Spending Breakdown:**
+   > *"How much have I spent on food in total?"*
+
+---
+
+## 🛠️ Management & Debugging Commands
+
+```bash
+# View aggregated live logs across all containers
+docker compose logs -f
+
+# View logs for a specific service
+docker compose logs -f agent-api
+docker compose logs -f streamlit-ui
+
+# Inspect running container instances
+docker compose ps
+
+# Stop all containers (data in PostgreSQL volume remains intact)
+docker compose down
+
+# Stop containers and wipe database volumes (clean reset)
+docker compose down -v
+```
+
+---
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+=======
 
 ```
+>>>>>>> 30b4105a0720cc487a08c69ffc207aeb647f4947
