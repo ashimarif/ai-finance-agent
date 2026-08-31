@@ -9,7 +9,7 @@
 
 An end-to-end, multi-container AI agent designed to automate personal expense tracking, dynamic group bill calculations, debt tracking (IOUs), and settlements using conversational natural language. 
 
-Built on a cyclical **LangGraph** orchestration graph powered by **Gemini 2.0 Flash**, backed by an ACID-compliant **PostgreSQL** relational database, exposed via high-performance **FastAPI** REST endpoints, and served through an interactive **Streamlit** user interface.
+Built on a cyclical **LangGraph** orchestration graph powered by **Gemini 3.6 Flash**, backed by an ACID-compliant **PostgreSQL** relational database, exposed via high-performance **FastAPI** REST endpoints, and served through an interactive **Streamlit** user interface.
 
 ---
 
@@ -46,7 +46,7 @@ Built on a cyclical **LangGraph** orchestration graph powered by **Gemini 2.0 Fl
                          |                                         |
                          |    +-------------------------------+    |
                          |    |        Agent State Node       |    |
-                         |    |     (Gemini 2.0 Flash LLM)    |    |
+                         |    |     (Gemini 3.6 Flash LLM)    |    |
                          |    +---------------+---------------+    |
                          |                    |                    |
                          |       [tools_condition / router]        |
@@ -79,7 +79,7 @@ Built on a cyclical **LangGraph** orchestration graph powered by **Gemini 2.0 Fl
 
 | Domain | Technology | Purpose |
 | :--- | :--- | :--- |
-| **LLM & Reasoning** | Google Gemini 2.0 Flash | Natural language reasoning, schema extraction, tool parameter generation |
+| **LLM & Reasoning** | Google Gemini 3.6 Flash | Natural language reasoning, schema extraction, tool parameter generation |
 | **Agent Framework** | LangGraph & LangChain Core | Cyclical state graph execution, memory checkpoints, conditional tool routing |
 | **Backend API** | FastAPI, Uvicorn, Pydantic | Asynchronous REST endpoints, strict schema validation, Swagger documentation |
 | **Database** | PostgreSQL 16, `psycopg` (v3) | Relational storage for personal expenses, outings, and IOU ledger |
