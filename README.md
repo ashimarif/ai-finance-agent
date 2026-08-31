@@ -52,3 +52,129 @@ Built on a cyclical **LangGraph** orchestration graph powered by **Gemini 2.0 Fl
 ├── requirements.txt        # Python dependency manifest
 ├── .env.example            # Environment variable template
 └── README.md               # Project documentation
+
+🗄️ Database Schema Design
+The relational database enforces financial accuracy with NUMERIC(10, 2) types and relational integrity constraints:
+
+SQL
+
+
+-- 1. Personal Solo Expenses
+CREATE TABLE personal_expenses (
+    id SERIAL PRIMARY KEY,
+    description TEXT NOT NULL,
+    amount NUMERIC(10, 2) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Group Outing Receipts
+CREATE TABLE group_bills (
+    id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    total_amount NUMERIC(10, 2) NOT NULL,
+    payer VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3. Individual Debts / IOUs (Linked via Foreign Key)
+CREATE TABLE iou_records (
+    id SERIAL PRIMARY KEY,
+    bill_id INTEGER REFERENCES group_bills(id) ON DELETE CASCADE,
+    debtor_name VARCHAR(100) NOT NULL,
+    amount_owed NUMERIC(10, 2) NOT NULL,
+    is_settled BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+🚀 Getting Started
+Prerequisites
+Docker Desktop (ensure Virtualization/WSL 2 is enabled)
+
+Google AI Studio API Key
+
+1. Clone the Repository
+Bash
+
+
+git clone [https://github.com/](https://github.com/)<your-username>/<repo-name>.git
+cd <repo-name>
+2. Configure Environment Variables
+Create a .env file in the root directory:
+
+Code snippet
+
+
+GEMINI_API_KEY="your_actual_gemini_api_key_here"
+DATABASE_URL="postgresql://postgres:postgres@postgres-db:5432/finance_db"
+3. Launch Stack with Docker Compose
+Run a single command to build and launch all three microservices:
+
+Bash
+
+
+docker compose up --build -d
+4. Access the Applications
+Streamlit Web UI: Open http://localhost:8501
+
+FastAPI Interactive Docs (Swagger): Open http://localhost:8000/docs
+
+PostgreSQL Database: Exposed on localhost:5432
+
+💬 Conversational Test Scenarios
+Try the following natural language prompts directly in the Streamlit UI:
+
+Log Solo Spending:
+
+"I spent $18.50 on McDonald's for lunch and $35 on a gas refill."
+
+Split Outing Bills:
+
+"I paid $120 for BBQ dinner with Sarah and David. Split the bill evenly across the 3 of us."
+
+Query Active Debts:
+
+"Who owes me money right now and what is the total outstanding balance?"
+
+Settle Debt:
+
+"Sarah just transferred me her share. Settle her debts."
+
+Spending Breakdown:
+
+"How much have I spent on food in total?"
+
+🛠️ Management & Debugging Commands
+Bash
+
+
+# View aggregated live logs across all containers
+docker compose logs -f
+
+# View logs for a specific service
+docker compose logs -f agent-api
+docker compose logs -f streamlit-ui
+
+# Inspect running container instances
+docker compose ps
+
+# Stop all containers (data in PostgreSQL volume remains intact)
+docker compose down
+
+# Stop containers and wipe database volumes (clean reset)
+docker compose down -v
+📄 License
+Distributed under the MIT License. See LICENSE for more information.
+
+
+---
+
+### How to push this to GitHub:
+
+1. Open your `README.md` file in VS Code.
+2. Replace all its content with the Markdown code above.
+3. Save the file (`Ctrl + S`).
+4. In your terminal, stage, commit, and push:
+   ```powershell
+   git add README.md
+   git commit -m "docs: add comprehensive production README with architecture diagram"
+   git push
